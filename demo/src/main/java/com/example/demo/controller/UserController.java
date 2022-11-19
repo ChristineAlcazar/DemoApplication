@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
@@ -39,7 +40,9 @@ public class UserController {
         if (!user.getFull_name().matches("^[\\.a-zA-Z0-9, ]*$")) {
             return new ResponseEntity<String>(ErrorMessage.FULLNAME_INVALID, HttpStatus.BAD_REQUEST);
         }
-        if (user.getEmail_address().matches("^[A-Z0-9+_.-]+@[A-Z0-9.-]+$")) {
+        if (Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")
+                .matcher(user.getEmail_address())
+                .matches()) {
             return new ResponseEntity<String>(ErrorMessage.EMAIL_INVALID, HttpStatus.BAD_REQUEST);
         }
         if (!user.getMobile_number().matches("^(09|\\+639)\\d{9}$")) {
